@@ -1,0 +1,33 @@
+language: go
+
+sudo: false
+dist: trusty
+
+branches:
+  only:
+  - master
+
+go:
+- "1.x"
+- "1.8"
+- "1.10.x"
+- master
+
+before_install:
+- find "${GOPATH%%:*}" -name '*.a' -delete
+- rm -rf "${GOPATH%%:*}/src/golang.org"
+- go get golang.org/x/tools/cover
+- go get golang.org/x/tools/cmd/cover
+
+script:
+- go test -race -coverprofile=coverage.txt -covermode=atomic
+
+after_success:
+- bash <(curl -s "https://codecov.io/bash")
+
+notifications:
+  email:
+    recipients:
+    - "78026399@qq.com"
+    on_success: change
+    on_failure: always
